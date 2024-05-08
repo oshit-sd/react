@@ -6,17 +6,20 @@ function App() {
     {
       id: 1,
       title: 'Task 1',
-      is_completed: false,
+      isComplete: false,
+      isEditing: true,
     },
     {
       id: 2,
       title: 'Task 2',
-      is_completed: false,
+      isComplete: true,
+      isEditing: false,
     },
     {
       id: 3,
       title: 'Task 3',
-      is_completed: false,
+      isComplete: false,
+      isEditing: false,
     },
   ]);
 
@@ -38,7 +41,7 @@ function App() {
       {
         id: todos.length + 1,
         title: todoInput,
-        is_completed: false,
+        isComplete: false,
       },
     ]);
     setTodoInput('');
@@ -46,6 +49,42 @@ function App() {
 
   function deleteTodo(id) {
     setTodos([...todos].filter(todo => todo.id !== id));
+  }
+
+  function completeTodo(id) {
+    const updatedTodos = todos.map(todo => {
+      if (todo.id === id) {
+        todo.isComplete = !todo.isComplete;
+      }
+      return todo;
+    });
+    setTodos(updatedTodos);
+  }
+
+  function masAsEditing(id) {
+    const updatedTodos = todos.map(todo => {
+      if (todo.id === id) {
+        todo.isEditing = !todo.isEditing;
+      }
+      return todo;
+    });
+    setTodos(updatedTodos);
+  }
+
+  function updateTodo(event, id) {
+    const updatedTodos = todos.map(todo => {
+      if (todo.id === id) {
+        if (event.target.value.trim().length === 0) {
+          todo.isEditing = false;
+          return todo;
+        }
+
+        todo.title = event.target.value;
+        todo.isEditing = false;
+      }
+      return todo;
+    });
+    setTodos(updatedTodos);
   }
 
   return (
@@ -69,9 +108,35 @@ function App() {
           <ul className="space-y-2 overflow-auto max-h-60 pb-5 border-b border-gray-300">
             {todos.map((item, index) => (
               <li key={index} className="flex items-center">
-                <input type="checkbox" className="form-checkbox mr-2" />
-                <p className="flex-1 line-through">
-                  {item.id} {item.title}
+                <input
+                  onChange={() => completeTodo(item.id)}
+                  type="checkbox"
+                  className="form-checkbox mr-2"
+                  checked={item.isComplete}
+                />
+                <p
+                  className={`flex-1 ${item.isComplete ? 'line-through' : ''}`}
+                >
+                  {!item.isEditing ? (
+                    <span onDoubleClick={() => masAsEditing(item.id)}>
+                      {item.title}
+                    </span>
+                  ) : (
+                    <input
+                      type="text"
+                      onBlur={event => updateTodo(event, item.id)}
+                      onKeyDown={event => {
+                        if (event.key === 'Enter') {
+                          updateTodo(event, item.id);
+                        } else if (event.key === 'Escape') {
+                          masAsEditing(item.id);
+                        }
+                      }}
+                      defaultValue={item.title}
+                      className="border px-3 py-1 rounded-lg w-full"
+                      autoFocus
+                    />
+                  )}
                 </p>
                 <svg
                   onClick={() => deleteTodo(item.id)}
