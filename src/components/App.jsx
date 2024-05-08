@@ -1,4 +1,5 @@
-import "./assets/css/style.css"
+import "./../assets/css/style.css"
+
 
 function App() {
   return (
@@ -8,11 +9,13 @@ function App() {
           <h1 className="text-xl font-bold mb-4">Todo Tasks</h1>
 
           {/* Added Field */}
-          <input
-            type="text"
-            placeholder="Add a new task..."
-            className="border px-3 py-2 rounded-lg w-full mb-4 shadow-md "
-          />
+          <form action="#">
+            <input
+              type="text"
+              placeholder="Add a new task..."
+              className="border px-3 py-2 rounded-lg w-full mb-4 shadow-md "
+            />
+          </form>
 
           {/* Task List */}
           <ul className="space-y-2 overflow-auto max-h-60 pb-5 border-b border-gray-300">
