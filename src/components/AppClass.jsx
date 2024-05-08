@@ -1,28 +1,57 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 export default class AppClass extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      todoInput: '',
       todos: [
         {
           id: 1,
-          title: "Task 1",
+          title: 'Task 1',
           is_completed: false,
         },
         {
           id: 2,
-          title: "Task 2",
+          title: 'Task 2',
           is_completed: false,
         },
         {
           id: 3,
-          title: "Task 3",
+          title: 'Task 3',
           is_completed: false,
         },
       ],
     };
   }
+
+  addTodo = event => {
+    event.preventDefault();
+
+    if (this.state.todoInput.trim().length === 0) {
+      return;
+    }
+
+    this.setState(prevState => {
+      const newTodos = [
+        ...prevState.todos,
+        {
+          id: prevState.todos.length + 1,
+          title: this.state.todoInput,
+          is_completed: false,
+        },
+      ];
+
+      return { todoInput: '', todos: newTodos };
+    });
+  };
+
+  handleInput = event => {
+    this.setState({
+      todoInput: event.target.value,
+    });
+  };
+
   render() {
     return (
       <div className="bg-gray-500">
@@ -31,8 +60,10 @@ export default class AppClass extends Component {
             <h1 className="text-xl font-bold mb-4">Todo Tasks</h1>
 
             {/* Added Field */}
-            <form action="#">
+            <form action="#" onSubmit={this.addTodo}>
               <input
+                value={this.state.todoInput}
+                onChange={this.handleInput}
                 type="text"
                 placeholder="Add a new task..."
                 className="border px-3 py-2 rounded-lg w-full mb-4 shadow-md "
@@ -41,10 +72,10 @@ export default class AppClass extends Component {
 
             {/* Task List */}
             <ul className="space-y-2 overflow-auto max-h-60 pb-5 border-b border-gray-300">
-              {this.state.todos.map((task, index) => (
-                <li className="flex items-center">
+              {this.state.todos.map((item, index) => (
+                <li key={index} className="flex items-center">
                   <input type="checkbox" className="form-checkbox mr-2" />
-                  <p className="flex-1 line-through">{task.title}</p>
+                  <p className="flex-1 line-through">{item.title}</p>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 text-red-500 cursor-pointer"
