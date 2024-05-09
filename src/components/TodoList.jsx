@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 TodoList.propTypes = {
-  todos: PropTypes.todos.array.isRequired,
-  addTodo: PropTypes.completeTodo.func.isRequired,
-  masAsEditing: PropTypes.masAsEditing.func.isRequired,
-  updateTodo: PropTypes.updateTodo.func.isRequired,
-  deleteTodo: PropTypes.deleteTodo.func.isRequired,
+  todos: PropTypes.array.isRequired,
+  completeTodo: PropTypes.func.isRequired,
+  masAsEditing: PropTypes.func.isRequired,
+  updateTodo: PropTypes.func.isRequired,
+  deleteTodo: PropTypes.func.isRequired,
 };
 
 function TodoList(props) {
