@@ -77,6 +77,32 @@ function App() {
     setTodos([...todos].filter(todo => todo.id !== id));
   }
 
+  function remaining() {
+    return todos.filter(todo => !todo.isComplete).length;
+  }
+
+  function completeAllTodos() {
+    const updatedTodos = todos.map(todo => {
+      todo.isComplete = true;
+      return todo;
+    });
+    setTodos(updatedTodos);
+  }
+
+  function clearCompleted() {
+    setTodos([...todos].filter(todo => !todo.isComplete));
+  }
+
+  function todosFiltered(filter) {
+    if (filter == 'all') {
+      return todos;
+    } else if (filter == 'active') {
+      return todos.filter(todo => !todo.isComplete);
+    } else if (filter == 'complete') {
+      return todos.filter(todo => todo.isComplete);
+    }
+  }
+
   return (
     <div className="bg-gray-500">
       <div className="flex justify-center items-center h-screen">
@@ -94,6 +120,10 @@ function App() {
               masAsEditing={masAsEditing}
               updateTodo={updateTodo}
               deleteTodo={deleteTodo}
+              remaining={remaining}
+              completeAllTodos={completeAllTodos}
+              clearCompleted={clearCompleted}
+              todosFiltered={todosFiltered}
             />
           ) : (
             <NoTodos />

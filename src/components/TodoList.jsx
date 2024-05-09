@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import TodoItemsRemaining from './TodoItemsRemaining';
+import TodoCompleteAll from './TodoCompleteAll';
+import TodoClearComplete from './TodoClearComplete';
+import TodosFilter from './TodosFilter';
 
 TodoList.propTypes = {
   todos: PropTypes.array.isRequired,
@@ -7,13 +11,19 @@ TodoList.propTypes = {
   masAsEditing: PropTypes.func.isRequired,
   updateTodo: PropTypes.func.isRequired,
   deleteTodo: PropTypes.func.isRequired,
+  remaining: PropTypes.func.isRequired,
+  completeAllTodos: PropTypes.func.isRequired,
+  clearCompleted: PropTypes.func.isRequired,
+  todosFiltered: PropTypes.func.isRequired,
 };
 
 function TodoList(props) {
+  const [filter, setFilter] = useState('all');
+
   return (
     <>
       <ul className="space-y-2 overflow-auto max-h-60 pb-5 border-b border-gray-300">
-        {props.todos.map((item, index) => (
+        {props.todosFiltered(filter).map((item, index) => (
           <li key={index} className="flex items-center">
             <input
               onChange={() => props.completeTodo(item.id)}
@@ -62,22 +72,14 @@ function TodoList(props) {
 
       {/* Check All Button */}
       <div className="flex justify-between items-center my-5 border-b pb-5 text-gray-600">
-        <button className="border py-1 px-2 rounded-md text-sm">
-          Check All
-        </button>
-        <div className="text-sm">2 items remaining</div>
+        <TodoCompleteAll completeAllTodos={props.completeAllTodos} />
+        <TodoItemsRemaining remaining={props.remaining} />
       </div>
 
       {/* Filters */}
       <div className="flex justify-between mt-4  text-gray-600">
-        <div>
-          <button className="border py-1 px-2 rounded-md">All</button>
-          <button className="py-1 px-2 rounded-md text-sm">Active</button>
-          <button className="py-1 px-2 rounded-md text-sm">Completed</button>
-        </div>
-        <button className="border py-1 px-2 rounded-md text-sm">
-          Clear completed
-        </button>
+        <TodosFilter filter={filter} setFilter={setFilter} />
+        <TodoClearComplete clearCompleted={props.clearCompleted} />
       </div>
     </>
   );
