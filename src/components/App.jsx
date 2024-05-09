@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import './../assets/css/style.css';
 import NoTodos from './NoTodos';
 import TodoForm from './TodoForm';
@@ -77,9 +77,10 @@ function App() {
     setTodos([...todos].filter(todo => todo.id !== id));
   }
 
-  function remaining() {
+  function remainingCalculation() {
     return todos.filter(todo => !todo.isComplete).length;
   }
+  const remaining = useMemo(remainingCalculation, [todos]);
 
   function completeAllTodos() {
     const updatedTodos = todos.map(todo => {
@@ -94,21 +95,65 @@ function App() {
   }
 
   function todosFiltered(filter) {
-    if (filter == 'all') {
+    if (filter === 'all') {
       return todos;
-    } else if (filter == 'active') {
+    } else if (filter === 'active') {
       return todos.filter(todo => !todo.isComplete);
-    } else if (filter == 'complete') {
+    } else if (filter === 'complete') {
       return todos.filter(todo => todo.isComplete);
     }
   }
+
+  // user name
+  const [name, setName] = useState('');
+  const nameInputEl = useRef(null);
+  // useEffect(() => {
+  //   nameInputEl.current.focus();
+  //   console.log('Use Effect change by todos');
+  // }, [todos]);
+
+  // useEffect(() => {
+  //   nameInputEl.current.focus();
+  //   console.log('Use Effect change by name');
+  // }, [name]);
+
+  useEffect(() => {
+    console.log('Use Effect running');
+    return function cleanup() {
+      console.log('Cleanup Effect');
+    };
+  }, []); //if use [] array its running in first time.
 
   return (
     <div className="bg-gray-500">
       <div className="flex justify-center items-center h-screen">
         <div className="w-[40%] bg-white p-6 rounded-lg shadow-md">
-          <h1 className="text-xl font-bold mb-4">Todo Tasks</h1>
+          <div className="name-container">
+            <h1 className="text-xl font-bold mb-4">What is your name ?</h1>
+            <input
+              value={name}
+              onChange={event => setName(event.target.value)}
+              type="text"
+              ref={nameInputEl}
+              placeholder="Write your name here.."
+              className="border px-3 py-2 rounded-lg w-[80%] mb-1 shadow-md "
+            />
+            <button
+              type="button"
+              className="border p-2 text-sm rounded-md float-end"
+              onClick={() => nameInputEl.current.focus()}
+            >
+              GET REF
+            </button>
+            {name && (
+              <p>
+                Hello, <span className="font-bold">{name}</span>
+              </p>
+            )}
+          </div>
 
+          {/* Add task */}
+          <h1 className="text-xl font-bold mb-4 mt-5">Todo APP</h1>
           {/* Added Field */}
           <TodoForm addTodo={addTodo} />
 
