@@ -4,6 +4,7 @@ import TodoItemsRemaining from './TodoItemsRemaining';
 import TodoCompleteAll from './TodoCompleteAll';
 import TodoClearComplete from './TodoClearComplete';
 import TodosFilter from './TodosFilter';
+import useToggle from '../hooks/useToggle';
 
 TodoList.propTypes = {
   todos: PropTypes.array.isRequired,
@@ -18,11 +19,13 @@ TodoList.propTypes = {
 };
 
 function TodoList(props) {
+  const [isFeatureOneVisible, setIsFeatureOneVisible] = useToggle(true);
+  const [isFeatureTwoVisible, setIsFeatureTwoVisible] = useToggle(true);
   const [filter, setFilter] = useState('all');
 
   return (
     <>
-      <ul className="space-y-2 overflow-auto max-h-60 pb-5 border-b border-gray-300">
+      <ul className="space-y-2 overflow-auto h-40 pb-5 border-b border-gray-300">
         {props.todosFiltered(filter).map((item, index) => (
           <li key={index} className="flex items-center">
             <input
@@ -70,17 +73,37 @@ function TodoList(props) {
         ))}
       </ul>
 
-      {/* Check All Button */}
+      {/* toggle */}
       <div className="flex justify-between items-center my-5 border-b pb-5 text-gray-600">
-        <TodoCompleteAll completeAllTodos={props.completeAllTodos} />
-        <TodoItemsRemaining remaining={props.remaining} />
+        <button
+          onClick={setIsFeatureOneVisible}
+          className="border py-1 px-2 rounded-md text-sm"
+        >
+          Check All Section
+        </button>
+        <button
+          onClick={setIsFeatureTwoVisible}
+          className="border py-1 px-2 rounded-md text-sm"
+        >
+          Filters Section
+        </button>
       </div>
 
+      {/* Check All Button */}
+      {isFeatureOneVisible && (
+        <div className="flex justify-between items-center my-5 border-b pb-5 text-gray-600">
+          <TodoCompleteAll completeAllTodos={props.completeAllTodos} />
+          <TodoItemsRemaining remaining={props.remaining} />
+        </div>
+      )}
+
       {/* Filters */}
-      <div className="flex justify-between mt-4  text-gray-600">
-        <TodosFilter filter={filter} setFilter={setFilter} />
-        <TodoClearComplete clearCompleted={props.clearCompleted} />
-      </div>
+      {isFeatureTwoVisible && (
+        <div className="flex justify-between mt-4  text-gray-600">
+          <TodosFilter filter={filter} setFilter={setFilter} />
+          <TodoClearComplete clearCompleted={props.clearCompleted} />
+        </div>
+      )}
     </>
   );
 }

@@ -3,28 +3,31 @@ import './../assets/css/style.css';
 import NoTodos from './NoTodos';
 import TodoForm from './TodoForm';
 import TodoList from './TodoList';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 function App() {
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      title: 'Task 1',
-      isComplete: false,
-      isEditing: false,
-    },
-    {
-      id: 2,
-      title: 'Task 2',
-      isComplete: true,
-      isEditing: false,
-    },
-    {
-      id: 3,
-      title: 'Task 3',
-      isComplete: false,
-      isEditing: false,
-    },
-  ]);
+  const [todos, setTodos] = useLocalStorage('todos', []);
+
+  // const [todos, setTodos] =  useState([
+  //   {
+  //     id: 1,
+  //     title: 'Task 1',
+  //     isComplete: false,
+  //     isEditing: false,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'Task 2',
+  //     isComplete: true,
+  //     isEditing: false,
+  //   },
+  //   {
+  //     id: 3,
+  //     title: 'Task 3',
+  //     isComplete: false,
+  //     isEditing: false,
+  //   },
+  // ]);
 
   function addTodo(todo) {
     setTodos([
@@ -105,7 +108,7 @@ function App() {
   }
 
   // user name
-  const [name, setName] = useState('');
+  const [name, setName] = useLocalStorage('name', '');
   const nameInputEl = useRef(null);
   // useEffect(() => {
   //   nameInputEl.current.focus();
@@ -119,10 +122,16 @@ function App() {
 
   useEffect(() => {
     console.log('Use Effect running');
+    // setName(JSON.parse(localStorage.getItem('name')) ?? '');
     return function cleanup() {
       console.log('Cleanup Effect');
     };
   }, []); //if use [] array its running in first time.
+
+  function handleNameInput(event) {
+    setName(event.target.value);
+    // localStorage.setItem('name', JSON.stringify(event.target.value));
+  }
 
   return (
     <div className="bg-gray-500">
@@ -132,7 +141,7 @@ function App() {
             <h1 className="text-xl font-bold mb-4">What is your name ?</h1>
             <input
               value={name}
-              onChange={event => setName(event.target.value)}
+              onChange={handleNameInput}
               type="text"
               ref={nameInputEl}
               placeholder="Write your name here.."
